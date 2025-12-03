@@ -1,42 +1,49 @@
 package com.example.controller;
 
 import com.example.dtos.request.BookRequest;
-import com.example.model.Book;
+import com.example.dtos.response.BookResponse;
+import com.example.mapper.BookMapper;
 import com.example.service.BookService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/books")
+@RequestMapping("/v1/api/books")
 public class BookController {
 
-    @Autowired
-    private BookService bookService;
+    private final BookService bookService;
 
-    @PostMapping("/users/{id}")
-    public Book create(@RequestBody BookRequest book,@PathVariable("id") Long userId) {
-        return bookService.create(book,userId);
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
     }
 
-    @GetMapping
-    public List<Book> getAll() {
-        return bookService.getAll();
+    @PostMapping("/movies/{movieId}/users/{userId}")
+    public BookResponse createBooking(
+            @PathVariable Long movieId,
+            @PathVariable Long userId,
+            @RequestBody BookRequest request) {
+
+        return BookMapper.toResponse(
+                bookService.create(movieId, userId, request)
+        );
+    }
+
+    @GetMapping("/users/{userId}")
+    public List<BookResponse> getAllBookingsByUser(@PathVariable Long userId) {
+        return bookService.getAllByUser(userId);
     }
 
     @GetMapping("/{id}")
-    public Book getById(@PathVariable Long id) {
+    public BookResponse getBookingById(@PathVariable Long id) {
         return bookService.getById(id);
     }
 
     @PutMapping("/{id}")
-    public Book update(@PathVariable Long id, @RequestBody BookRequest book) {
-        return bookService.update(id, book);
-    }
+    public BookResponse updateBooking(
+            @PathVariable Long id,
+            @RequestBody BookRequest request) {
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        bookService.delete(id);
+        return bookService.updateBook(id, request);
     }
 }

@@ -1,6 +1,6 @@
 package com.example.enums;
 
-public enum Sits {
+public enum ESits {
     ZERO_ZERO, ZERO_ONE, ZERO_TWO, ZERO_THREE, ZERO_FOUR, ZERO_FIVE, ZERO_SIX,
     ONE_ZERO, ONE_ONE, ONE_TWO, ONE_THREE, ONE_FOUR, ONE_FIVE, ONE_SIX,
     TWO_ZERO, TWO_ONE, TWO_TWO, TWO_THREE, TWO_FOUR, TWO_FIVE, TWO_SIX,

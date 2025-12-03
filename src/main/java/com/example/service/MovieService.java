@@ -62,6 +62,12 @@ public class MovieService {
 
         return MovieMapper.toResponse(movie, avgRating);
     }
+    
+    public Movie findById(Long id) {
+        Movie movie = movieRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Movie not found"));
+        return movie;
+    }
 
     // UPDATE MOVIE
     public MovieResponse update(Long id, MovieRequest request) {

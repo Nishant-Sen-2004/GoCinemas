@@ -1,6 +1,9 @@
 package com.example.model;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
+import com.example.enums.Status;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -21,13 +24,14 @@ public class Book {
 
     @ManyToOne
     private Movie movie;
-    private String LocalDateTime;
+    private LocalDateTime date;
 
     @ManyToOne
     private Users user;
     @OneToMany(mappedBy = "book", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Sits> sits;
     private Double price;
+    private Status status;
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -39,11 +43,12 @@ public class Book {
 
     public Users getUser() { return user; }
     public void setUser(Users user) { this.user = user; }
-	public String getLocalDateTime() {
-		return LocalDateTime;
+    
+	public LocalDateTime getDate() {
+		return date;
 	}
-	public void setLocalDateTime(String localDateTime) {
-		LocalDateTime = localDateTime;
+	public void setDate(LocalDateTime date) {
+		this.date = date;
 	}
 	public List<Sits> getSits() {
 		return sits;
@@ -57,6 +62,13 @@ public class Book {
 	public void setPrice(Double price) {
 		this.price = price;
 	}
+	public Status getStatus() {
+		return status;
+	}
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+	
     
     
 }

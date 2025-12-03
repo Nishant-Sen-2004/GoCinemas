@@ -2,6 +2,8 @@ package com.example.model;
 
 
 
+import com.example.enums.ESits;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -27,7 +29,7 @@ public class Sits {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Enumerated(EnumType.STRING)
-    private Sits sit;
+    private ESits sit;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Users user;
@@ -43,10 +45,10 @@ public class Sits {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Sits getSit() {
+	public ESits getSit() {
 		return sit;
 	}
-	public void setSit(Sits sit) {
+	public void setSit(ESits sit) {
 		this.sit = sit;
 	}
 	public Users getUser() {
@@ -61,5 +63,13 @@ public class Sits {
 	public void setMovie(Movie movie) {
 		this.movie = movie;
 	}
+	public Book getBook() {
+		return book;
+	}
+	public void setBook(Book book) {
+		this.book = book;
+	}
+	
+	
 
 }
