@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CineBook UI</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+      body {
+        background: #f5f5f7;
+        padding: 20px;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+      }
+      .logo {
+        font-size: 22px;
+        font-weight: bold;
+        color: #2563eb;
+      }
+      nav a {
+        margin-right: 20px;
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      /* Hover effect */
+      nav a:hover {
+        color: #2563eb;
+      }
+
+      /* Active class for clicked link */
+      nav a.active {
+        color: #2563eb;
+      }
+
+      .auth-buttons button {
+        margin-left: 10px;
+        padding: 6px 14px;
+        border: none;
+        cursor: pointer;
+        border-radius: 6px;
+        font-weight: bold;
+      }
+      .auth-buttons .login {
+        background: white;
+        border: 1px solid #ccc;
+      }
+      .auth-buttons .register {
+        background: #2563eb;
+        color: white;
+      }
+
+      .search-section {
+        margin-top: 20px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .search-section input,
+      .search-section select {
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        width: 200px;
+      }
+
+      h2 {
+        margin: 25px 0 15px;
+        font-size: 22px;
+        font-weight: bold;
+      }
+
+      .movie-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+      }
+
+      .movie-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+        cursor: pointer;
+      }
+      .movie-card:hover {
+        transform: scale(1.03);
+      }
+
+      .movie-card img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+      }
+
+      .movie-info {
+        padding: 12px;
+      }
+      .movie-info h3 {
+        margin-bottom: 6px;
+        font-size: 18px;
+      }
+      .rating {
+        font-weight: bold;
+        color: #fbbf24;
+        margin-bottom: 10px;
+      }
+      .showtimes span {
+        background: #eef2ff;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        margin-right: 6px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class="logo">🎬 GoCinemas 🎬</div>
+
+      <nav>
+        <a href="home.html">Movies</a>
+        <a href="AdminDashboard.html">Admin</a>
+      </nav>
+
+      <div class="auth-buttons">
+        <button class="login" onclick="location.href='login.html'">
+          Login
+        </button>
+        <button class="register" onclick="location.href='register.html'">
+          Register
+        </button>
+      </div>
+    </header>
+
+    <div class="search-section">
+      <input type="text" placeholder="Search for movies..." id="searchInput" />
+      <select id="genreFilter">
+        <option value>All Genres</option>
+        <option value="Action">Action</option>
+        <option value="Adventure">Adventure</option>
+        <option value="Drama">Drama</option>
+        <option value="Mystery">Mystery</option>
+        <option value="Sci-Fi">Sci-Fi</option>
+        <option value="Romance">Romance</option>
+      </select>
+
+      <select id="ratingFilter">
+        <option value>Any Rating</option>
+        <option value="4.5">4.5+</option>
+        <option value="4.6">4.6+</option>
+        <option value="4.7">4.7+</option>
+        <option value="4.8">4.8+</option>
+      </select>
+
+      <select id="timeFilter">
+        <option value>Any Time</option>
+        <option value="morning">Morning (6 AM – 11 AM)</option>
+        <option value="afternoon">Afternoon (12 PM – 4 PM)</option>
+        <option value="evening">Evening (5 PM – 10 PM)</option>
+      </select>
+    </div>
+
+    <h2>Now Showing</h2>
+
+    <div class="movie-grid" id="movieGrid"></div>
+
+    <script>
+      const movies = [
+        {
+          title: "The Cinematic Odyssey",
+          img: "https://picsum.photos/seed/space/400/250",
+          desc: "A breathtaking journey across the universe.",
+          rating: 4.8,
+          times: ["10:00 AM", "1:00 PM", "4:00 PM"],
+          director: "John Doe",
+          cast: "Alice, Bob, Charlie",
+          releaseDate: "2025-12-20",
+          genre: "Sci-Fi",
+        },
+        {
+          title: "Echoes of the Past",
+          img: "https://picsum.photos/seed/ruins/400/250",
+          desc: "An emotional drama exploring memories and love.",
+          rating: 4.7,
+          times: ["12:00 PM", "3:00 PM", "6:00 PM"],
+          director: "Mary Smith",
+          cast: "David, Emma, Sarah",
+          releaseDate: "2025-11-15",
+          genre: "Romance",
+        },
+        {
+          title: "Code Breakers",
+          img: "https://picsum.photos/seed/hacker/400/250",
+          desc: "A thrilling tech adventure unraveling a cyber conspiracy.",
+          rating: 4.7,
+          times: ["2:00 PM", "5:00 PM", "8:00 PM"],
+          director: "Alan Turing",
+          cast: "Nina, Leo, Sam",
+          releaseDate: "2025-10-05",
+          genre: "Action",
+        },
+        {
+          title: "The Last Stand",
+          img: "https://picsum.photos/seed/mountain/400/250",
+          desc: "Explosive action and heroic battles.",
+          rating: 4.6,
+          times: ["11:00 AM", "2:30 PM", "6:00 PM"],
+          director: "James Cameron",
+          cast: "Chris, Kate, John",
+          releaseDate: "2025-09-12",
+          genre: "Adventure",
+        },
+        {
+          title: "Mystery Manor",
+          img: "https://picsum.photos/seed/mystery/400/250",
+          desc: "A thrilling whodunit mystery.",
+          rating: 4.5,
+          times: ["10:30 AM", "1:30 PM", "4:30 PM"],
+          director: "Agatha Christie",
+          cast: "Mia, Oliver, Zoe",
+          releaseDate: "2025-08-20",
+          genre: "Adventure",
+        },
+        {
+          title: "The Cinematic Odyssey",
+          img: "https://picsum.photos/seed/space/400/250",
+          desc: "A breathtaking journey across the universe.",
+          rating: 4.8,
+          times: ["10:00 AM", "1:00 PM", "4:00 PM"],
+          director: "John Doe",
+          cast: "Alice, Bob, Charlie",
+          releaseDate: "2025-12-20",
+          genre: "Sci-Fi",
+        },
+        {
+          title: "Echoes of the Past",
+          img: "https://picsum.photos/seed/ruins/400/250",
+          desc: "An emotional drama exploring memories and love.",
+          rating: 4.7,
+          times: ["12:00 PM", "3:00 PM", "6:00 PM"],
+          director: "Mary Smith",
+          cast: "David, Emma, Sarah",
+          releaseDate: "2025-11-15",
+          genre: "Romance",
+        },
+        {
+          title: "Code Breakers",
+          img: "https://picsum.photos/seed/hacker/400/250",
+          desc: "A thrilling tech adventure unraveling a cyber conspiracy.",
+          rating: 4.7,
+          times: ["2:00 PM", "5:00 PM", "8:00 PM"],
+          director: "Alan Turing",
+          cast: "Nina, Leo, Sam",
+          releaseDate: "2025-10-05",
+          genre: "Action",
+        },
+        {
+          title: "The Last Stand",
+          img: "https://picsum.photos/seed/mountain/400/250",
+          desc: "Explosive action and heroic battles.",
+          rating: 4.6,
+          times: ["11:00 AM", "2:30 PM", "6:00 PM"],
+          director: "James Cameron",
+          cast: "Chris, Kate, John",
+          releaseDate: "2025-09-12",
+          genre: "Adventure",
+        },
+        {
+          title: "Mystery Manor",
+          img: "https://picsum.photos/seed/mystery/400/250",
+          desc: "A thrilling whodunit mystery.",
+          rating: 4.5,
+          times: ["10:30 AM", "1:30 PM", "4:30 PM"],
+          director: "Agatha Christie",
+          cast: "Mia, Oliver, Zoe",
+          releaseDate: "2025-08-20",
+          genre: "Adventure",
+        },
+        {
+          title: "Galactic Wars",
+          img: "https://picsum.photos/seed/galaxy/400/250",
+          desc: "Interstellar battles for the fate of the universe.",
+          rating: 4.9,
+          times: ["9:00 AM", "12:00 PM", "6:00 PM"],
+          director: "George Lucas",
+          cast: "Mark, Carrie, Harrison",
+          releaseDate: "2025-12-01",
+          genre: "Sci-Fi",
+        },
+        {
+          title: "Love in Paris",
+          img: "https://picsum.photos/seed/paris/400/250",
+          desc: "A romantic story of finding love in the city of lights.",
+          rating: 4.4,
+          times: ["10:00 AM", "1:00 PM", "5:00 PM"],
+          director: "Sophie Marceau",
+          cast: "Liam, Emma, Chloe",
+          releaseDate: "2025-11-25",
+          genre: "Romance",
+        },
+        {
+          title: "Cyber Heist",
+          img: "https://picsum.photos/seed/cyber/400/250",
+          desc: "Hackers plan the ultimate cyber heist.",
+          rating: 4.6,
+          times: ["3:00 PM", "6:00 PM", "9:00 PM"],
+          director: "Alan Turing",
+          cast: "Nina, Leo, Sam",
+          releaseDate: "2025-10-20",
+          genre: "Action",
+        },
+        {
+          title: "Haunted Nights",
+          img: "https://picsum.photos/seed/haunted/400/250",
+          desc: "A chilling horror story set in an abandoned mansion.",
+          rating: 4.3,
+          times: ["8:00 PM", "10:00 PM"],
+          director: "James Wan",
+          cast: "Olivia, Ethan, Sarah",
+          releaseDate: "2025-09-30",
+          genre: "Horror",
+        },
+        {
+          title: "The Great Adventure",
+          img: "https://picsum.photos/seed/adventure/400/250",
+          desc: "Explorers travel to uncharted lands and face thrilling challenges.",
+          rating: 4.5,
+          times: ["11:00 AM", "2:00 PM", "5:00 PM"],
+          director: "Indiana Jones",
+          cast: "Harrison, Karen, Paul",
+          releaseDate: "2025-08-15",
+          genre: "Adventure",
+        },
+        {
+          title: "Detective Chronicles",
+          img: "https://picsum.photos/seed/detective/400/250",
+          desc: "A detective unravels complex mysteries across the city.",
+          rating: 4.7,
+          times: ["1:00 PM", "4:00 PM", "7:00 PM"],
+          director: "Arthur Conan Doyle",
+          cast: "Sherlock, Watson, Irene",
+          releaseDate: "2025-07-22",
+          genre: "Mystery",
+        },
+        {
+          title: "Future Tech",
+          img: "https://picsum.photos/seed/futuretech/400/250",
+          desc: "A visionary tech saga exploring AI and futuristic societies.",
+          rating: 4.8,
+          times: ["10:00 AM", "1:00 PM", "4:00 PM"],
+          director: "Elon Tusk",
+          cast: "Alice, Bob, Charlie",
+          releaseDate: "2025-12-12",
+          genre: "Sci-Fi",
+        },
+        {
+          title: "Romance in Rome",
+          img: "https://picsum.photos/seed/rome/400/250",
+          desc: "Two strangers meet and fall in love in historic Rome.",
+          rating: 4.5,
+          times: ["11:00 AM", "2:00 PM", "5:00 PM"],
+          director: "Claudia Rossi",
+          cast: "Luca, Maria, Sofia",
+          releaseDate: "2025-11-05",
+          genre: "Romance",
+        },
+        {
+          title: "Island Survival",
+          img: "https://picsum.photos/seed/island/400/250",
+          desc: "Stranded on a deserted island, a group fights to survive.",
+          rating: 4.6,
+          times: ["9:00 AM", "12:00 PM", "3:00 PM"],
+          director: "Steven Spielberg",
+          cast: "Tom, Jerry, Anna",
+          releaseDate: "2025-10-10",
+          genre: "Adventure",
+        },
+        {
+          title: "Nightmare Alley",
+          img: "https://picsum.photos/seed/nightmare/400/250",
+          desc: "A psychological thriller with dark twists and turns.",
+          rating: 4.4,
+          times: ["7:00 PM", "9:00 PM"],
+          director: "Guillermo del Toro",
+          cast: "Brad, Lisa, Carl",
+          releaseDate: "2025-09-18",
+          genre: "Thriller",
+        },
+      ];
+
+      const movieGrid = document.getElementById("movieGrid");
+      const searchInput = document.getElementById("searchInput");
+      const genreFilter = document.getElementById("genreFilter");
+      const ratingFilter = document.getElementById("ratingFilter");
+      const timeFilter = document.getElementById("timeFilter");
+
+      // Render movies
+      function renderMovies(list) {
+        movieGrid.innerHTML = "";
+        if (list.length === 0) {
+          movieGrid.innerHTML = "<p>No movies found.</p>";
+          return;
+        }
+        list.forEach((movie, index) => {
+          movieGrid.innerHTML += `
+      <div class="movie-card" onclick="showMovieDetail(${index})">
+        <img src="${movie.img}" />
+        <div class="movie-info">
+          <h3>${movie.title}</h3>
+          <p>${movie.desc}</p>
+          <div class="rating">⭐ ${movie.rating}</div>
+          <div class="showtimes">
+            ${movie.times.map((t) => `<span>${t}</span>`).join("")}
+          </div>
+        </div>
+      </div>`;
+        });
+      }
+
+      renderMovies(movies);
+
+      // Convert 12-hour time to 24-hour number
+      function convertTo24(timeString) {
+        const [time, mer] = timeString.split(" ");
+        let [hrs, mins] = time.split(":").map(Number);
+        if (mer === "PM" && hrs !== 12) hrs += 12;
+        if (mer === "AM" && hrs === 12) hrs = 0;
+        return hrs;
+      }
+
+      // Filter function
+      function filterMovies() {
+        const keyword = searchInput.value.toLowerCase().trim();
+        const genre = genreFilter.value;
+        const rating = ratingFilter.value;
+        const time = timeFilter.value;
+
+        const filtered = movies.filter((movie) => {
+          // Keyword search
+          const matchKeyword =
+            movie.title.toLowerCase().includes(keyword) ||
+            movie.desc.toLowerCase().includes(keyword);
+
+          // Genre filter
+          const matchGenre = genre === "" || movie.genre === genre;
+
+          // Rating filter
+          const matchRating =
+            rating === "" || movie.rating >= parseFloat(rating);
+
+          // Time filter
+          let matchTime = true;
+          if (time !== "") {
+            matchTime = movie.times.some((t) => {
+              const hour = convertTo24(t);
+              if (time === "morning") return hour >= 6 && hour < 12;
+              if (time === "afternoon") return hour >= 12 && hour < 17;
+              if (time === "evening") return hour >= 17 && hour <= 22;
+            });
+          }
+
+          return matchKeyword && matchGenre && matchRating && matchTime;
+        });
+
+        renderMovies(filtered);
+      }
+
+      // Event listeners
+      searchInput.addEventListener("input", filterMovies);
+      genreFilter.addEventListener("change", filterMovies);
+      ratingFilter.addEventListener("change", filterMovies);
+      timeFilter.addEventListener("change", filterMovies);
+
+      // Movie detail page
+      function showMovieDetail(index) {
+        localStorage.setItem("selectedMovie", JSON.stringify(movies[index]));
+        window.location.href = "/Go-Schema-ui/movieDetail.html";
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CineBook Admin Dashboard</title>
+
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
+
+  body{
+    display:flex;
+    background:#f5f5f7;
+  }
+
+  /* SIDEBAR */
+  .sidebar{
+    width:260px;
+    height:100vh;
+    background:#1e1e1e;
+    color:#fff;
+    position:fixed;
+    padding-top:25px;
+    transition:.3s;
+  }
+  .sidebar h2{
+    text-align:center;
+    margin-bottom:25px;
+    font-size:22px;
+  }
+  .sidebar a{
+    display:block;
+    padding:14px 25px;
+    color:#ccc;
+    text-decoration:none;
+    font-size:15px;
+    transition:.2s;
+  }
+  .sidebar a:hover{
+    background:#2563eb;
+    color:#fff;
+  }
+
+  /* MOBILE */
+  .menu-btn{
+    display:none;
+    position:absolute;
+    top:15px; left:15px;
+    background:#111;
+    padding:10px 15px;
+    color:white;
+    cursor:pointer;
+    border-radius:4px;
+    z-index:1000;
+  }
+  @media(max-width:768px){
+    .sidebar{left:-260px;}
+    .sidebar.active{left:0;}
+    .menu-btn{display:block;}
+  }
+
+  /* MAIN CONTENT */
+  .main{
+    margin-left:260px;
+    padding:25px;
+    width:100%;
+    transition:.3s;
+  }
+  @media(max-width:768px){
+    .main{margin-left:0;}
+  }
+
+  h1{
+    margin-bottom:20px;
+    color:#2563eb;
+  }
+
+  /* CARDS */
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+    gap:20px;
+  }
+
+  .card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 3px 8px rgba(0,0,0,0.1);
+    text-align:center;
+  }
+
+  .card h3{
+    color:#333;
+    margin-bottom:10px;
+  }
+
+  .card p{
+    font-size:22px;
+    font-weight:bold;
+    color:#2563eb;
+  }
+
+  /* TABLE */
+  table{
+    margin-top:30px;
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 3px 8px rgba(0,0,0,0.1);
+  }
+
+  th{
+    background:#2563eb;
+    color:white;
+    padding:14px;
+    text-align:left;
+  }
+  td{
+    padding:12px;
+    border-bottom:1px solid #eee;
+  }
+
+  @media(max-width:600px){
+    table, thead, tbody, th, td, tr{
+      display:block;
+    }
+    th{display:none;}
+    td{
+      border:none;
+      padding:10px;
+      border-bottom:1px solid #ddd;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="menu-btn" onclick="toggleSidebar()">☰</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <h2>🎬 GoCinemas Admin</h2>
+  <a href="AdminDashboard.html">Dashboard</a>
+  <a href="/Go-Schema-ui/home.html">Movies</a>
+  <a href="#">Bookings</a>
+  <a href="#">Users</a>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <h1>Dashboard Overview</h1>
+
+  <div class="cards">
+    <div class="card">
+      <h3>Total Movies</h3>
+      <p id="movieCount">0</p>
+    </div>
+
+    <div class="card">
+      <h3>Total Users</h3>
+      <p id="userCount">0</p>
+    </div>
+
+    <div class="card">
+      <h3>Total Bookings</h3>
+      <p id="bookingCount">0</p>
+    </div>
+
+    <div class="card">
+      <h3>Total Revenue</h3>
+      <p id="revenueTotal">Rs 0</p>
+    </div>
+  </div>
+
+  <h2 style="margin-top:30px;">Recent Bookings</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Movie</th>
+        <th>Seats</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+
+    <tbody id="bookingTable"></tbody>
+  </table>
+</div>
+
+<script>
+  // Dummy Data
+  const dummyData = {
+    movies: 10,
+    users: 320,
+    bookings: 94,
+    revenue: 78500,
+    bookingLogs: [
+      { user: "Niraj", movie: "The Cinematic Odyssey", seats: 2, total: 700 },
+      { user: "Anish", movie: "Galactic Wars", seats: 3, total: 1050 },
+      { user: "Sita", movie: "Mystery Manor", seats: 1, total: 350 },
+      { user: "Rohan", movie: "Code Breakers", seats: 4, total: 1400 },
+      { user: "Kiran", movie: "Adventure Island", seats: 2, total: 700 }
+    ]
+  };
+
+  // Fill Stats
+  document.getElementById("movieCount").innerText = dummyData.movies;
+  document.getElementById("userCount").innerText = dummyData.users;
+  document.getElementById("bookingCount").innerText = dummyData.bookings;
+  document.getElementById("revenueTotal").innerText = "Rs " + dummyData.revenue;
+
+  // Fill Table
+  const tableBody = document.getElementById("bookingTable");
+  dummyData.bookingLogs.forEach(log => {
+    tableBody.innerHTML += `
+      <tr>
+        <td>${log.user}</td>
+        <td>${log.movie}</td>
+        <td>${log.seats}</td>
+        <td>Rs ${log.total}</td>
+      </tr>
+    `;
+  });
+
+  // Toggle Sidebar (Mobile)
+  function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("active");
+  }
+</script>
+
+</body>
+</html>
